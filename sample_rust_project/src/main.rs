@@ -1,9 +1,15 @@
-mod root;
+use actix_web::{web, App, HttpServer, Responder};
 
-fn main() {
-    // ローカルホスト3000番ポートでサーバーを起動する
-    rouille::start_server("localhost:3000", move |request| {
-        // リクエストを受け取ったら、レスポンスを返す
-        rouille::Response::text("Hello, world!")
-    });
+async fn greet() -> impl Responder {
+    "Hello, world!"
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new().route("/", web::get().to(greet))
+    })
+        .bind("127.0.0.1:3000")?
+        .run()
+        .await
 }
